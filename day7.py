@@ -21,7 +21,7 @@ def sum_position(dict_deltas, delta):
     dict_deltas[delta] = sum
     return sum
 
-def get_best(crabs):
+def get_best(crabs, is_fuel_constant):
     most_strategic = -1
     best_position = 0
     crabbiest = crabs[0]
@@ -31,6 +31,8 @@ def get_best(crabs):
         for position in crabs:
             if most_strategic > 0 and fuel > most_strategic:
                 break
+            elif is_fuel_constant:
+                fuel += abs(position - crab_pos)
             else:
                 fuel += sum_position(dist_dict, abs(position - crab_pos))
         if fuel < most_strategic or most_strategic < 0:
@@ -39,8 +41,11 @@ def get_best(crabs):
     return best_position, most_strategic
     
 def get_most_strategic():
+    is_fuel_constant = True
     where_the_crabs_at = initialize()
-    best_position, most_strategic = get_best(where_the_crabs_at)
-    print("The most crab-tastic position is %s and it will take %s fuel to align" % (best_position, most_strategic))
+    best_position, most_strategic = get_best(where_the_crabs_at, is_fuel_constant)
+    print("When fuel is constant, a crab-tastic start would be at %s with %s fuel cells." % (best_position, most_strategic))
+    best_position, most_strategic = get_best(where_the_crabs_at, not is_fuel_constant)
+    print("Otherwise, when fuel is not constant, start at %s with %s fuel cells." % (best_position, most_strategic))
 
 get_most_strategic()
