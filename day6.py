@@ -25,6 +25,7 @@ def next_day(life_stage_cycle):
     new_life[8] = day_0_lanterns
     return new_life
 
+
 def reproduce(days):
     fishes = parse_fishes()
     life_stage = initialize(fishes)
@@ -33,7 +34,11 @@ def reproduce(days):
     return sum(life_stage)
 
 def calculate_lanterns():
-    total_lanterns = reproduce(256)
-    print(total_lanterns)
+    day = 80
+    total_lanterns = reproduce(day)
+    print("%s: %s lantern fishes" % (day, total_lanterns))
+    day = 256
+    total_lanterns = reproduce(day)
+    print("%s: %s lantern fishes" % (day, total_lanterns))
 
 calculate_lanterns()
