@@ -12,18 +12,18 @@ def initialize():
     where_the_crabs_at.sort(reverse=True)
     return where_the_crabs_at
 
-def sum_position(dict_distance, delta):
-    if delta in dict_distance:
-        return dict_distance[delta]
+def sum_position(dict_deltas, delta):
+    if delta in dict_deltas:
+        return dict_deltas[delta]
     sum = 0
     for dist in range(delta + 1):
         sum += dist
-    dict_distance[delta] = sum
+    dict_deltas[delta] = sum
     return sum
 
 def get_best(crabs):
-    best_position = -1
     most_strategic = -1
+    best_position = 0
     crabbiest = crabs[0]
     dist_dict = {}
     for crab_pos in range(crabbiest):
