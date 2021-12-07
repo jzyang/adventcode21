@@ -2,11 +2,11 @@
 
 from sys import stdin
 
-def parseFile():
+def parse_file():
     return stdin.read().strip().split(',')
 
 def initialize():
-    where_the_crabs_at = parseFile()
+    where_the_crabs_at = parse_file()
     for index in range(len(where_the_crabs_at)):
         where_the_crabs_at[index] = int(where_the_crabs_at[index])
     where_the_crabs_at.sort(reverse=True)
