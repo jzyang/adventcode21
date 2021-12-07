@@ -6,11 +6,11 @@ def parseFile():
     return stdin.read().strip().split(',')
 
 def initialize():
-    crab_positions = parseFile()
-    for index in range(len(crab_positions)):
-        crab_positions[index] = int(crab_positions[index])
-    crab_positions.sort(reverse=True)
-    return crab_positions
+    where_the_crabs_at = parseFile()
+    for index in range(len(where_the_crabs_at)):
+        where_the_crabs_at[index] = int(where_the_crabs_at[index])
+    where_the_crabs_at.sort(reverse=True)
+    return where_the_crabs_at
 
 def sum_position(dict_distance, delta):
     if delta in dict_distance:
@@ -23,24 +23,24 @@ def sum_position(dict_distance, delta):
 
 def get_best(crabs):
     best_position = -1
-    best_fuel = -1
-    max_position = crabs[0]
+    most_strategic = -1
+    crabbiest = crabs[0]
     dist_dict = {}
-    for crab in range(max_position):
+    for crab_pos in range(crabbiest):
         fuel = 0
         for position in crabs:
-            if best_fuel > 0 and fuel > best_fuel:
+            if most_strategic > 0 and fuel > most_strategic:
                 break
             else:
-                fuel += sum_position(dist_dict, abs(position - crab))
-        if fuel < best_fuel or best_fuel < 0:
-            best_fuel = fuel
-            best_position = position
-    return best_position, best_fuel
+                fuel += sum_position(dist_dict, abs(position - crab_pos))
+        if fuel < most_strategic or most_strategic < 0:
+            most_strategic = fuel
+            best_position = crab_pos
+    return best_position, most_strategic
     
-def get_best_fuel():
-    crab_positions = initialize()
-    best_position, best_fuel = get_best(crab_positions)
-    print(best_fuel)
+def get_most_strategic():
+    where_the_crabs_at = initialize()
+    best_position, most_strategic = get_best(where_the_crabs_at)
+    print("The most crab-tastic position is %s and it will take %s fuel to align" % (best_position, most_strategic))
 
-get_best_fuel()
+get_most_strategic()
