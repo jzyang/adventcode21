@@ -6,24 +6,34 @@ import math
 def parse_fishes():
     return stdin.read().strip().split(',')
 
-def reproduce(day, previous_day):
-    current = previous_day.copy()
-    total_fishes = len(current)
-    for fish_day in range(total_fishes):
-        if int(current[int(fish_day)]) > 0:
-            current[int(fish_day)] = str(int(current[int(fish_day)]) - 1)
-        else:
-            current[int(fish_day)] = '6'
-            current.append('8')
-    return current
+def initialize(fishes):
+    life_stage = [0] * 9
+    for fish in fishes:
+        # increment the number of fish at that life stage
+        life_stage[int(fish)] += 1
+    return life_stage
 
-# Get the result
-fishes = parse_fishes()
-total_lanterns = 0
-days = 80
-for day in range(1, days + 1):
-    fishes = reproduce(day, fishes)
-    total_lanterns = len(fishes)
+def next_day(life_stage_cycle):
+    new_life = [0] * 9
+    day_0_lanterns = life_stage_cycle[0]
+    for day in range(8):
+        new_life[day] = life_stage_cycle[day + 1]
+    # Add the lanterns that's gone through their full cycle to
+    # those that are on day 6 of their lives (from day 7)
+    new_life[6] += day_0_lanterns
+    # These are the new baby lanterns day 0s produced
+    new_life[8] = day_0_lanterns
+    return new_life
 
+def reproduce(days):
+    fishes = parse_fishes()
+    life_stage = initialize(fishes)
+    for day in range(days):
+        life_stage = next_day(life_stage)
+    return sum(life_stage)
 
-print(total_lanterns)
+def calculate_lanterns():
+    total_lanterns = reproduce(256)
+    print(total_lanterns)
+
+calculate_lanterns()
