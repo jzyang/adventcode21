@@ -94,7 +94,7 @@ def get_size(matrix, matrix_traveled, row, col):
 def dfs(matrix, added, row, col, drow, dcol):
     
    if matrix[row + drow][col + dcol] != 9:
-        if row + drow >= 0 avvrbgdbcgtcdilitjjrdhefncjlvgcetrjbrbvkfbteu
+        if row + drow >= 0
          and matrix[row + drow][col + dcol]
         dfs(matrix, row, col, )
     elif:
