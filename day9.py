@@ -4,6 +4,7 @@ from sys import stdin
 def parse_file():
     return stdin.read().strip().split('\n')
 
+# Generate a matrix from the given input
 def generate_matrix(input):
     rows = len(input)
     cols = len(input[0])
@@ -16,6 +17,8 @@ def generate_matrix(input):
         matrix.append(new_row)
     return matrix
 
+# Check if a given (row, col) in the matrix is the riskiest
+# by looking around to see if there are riskier.
 def is_risky(matrix, row, col):
     rows = len(matrix)
     cols = len(matrix[0])
@@ -35,6 +38,7 @@ def is_risky(matrix, row, col):
         return not_risky
     return True
 
+# Find all risks associated with this graph
 def find_risks(matrix):
     rows = len(matrix)
     cols = len(matrix[0])
@@ -46,21 +50,19 @@ def find_risks(matrix):
     for row in range(rows):
         for col in range(cols):
             if is_risky(matrix, row, col):
+                # This is a nadier, there is no riskier, add it to the
+                # risks list.
                 risks.append(matrix[row][col] + 1)
+                # Calculate the size
                 basin_sizes.append(get_size(matrix, traveled, row, col))
     
-    return sum(risks), basin_sizes
+    basin_sizes = sorted(basin_sizes)
+    multiple = basin_sizes[-1] * basin_sizes[-2] * basin_sizes[-3]
+    
+    return sum(risks), multiple
 
-def find_basins(matrix):
-    rows = len(matrix)
-    cols = len(matrix[0])
-    risks = []
-    for row in range(rows):
-        for col in range(cols):
-            if is_risky(matrix, row, col):
-                risks.append(matrix[row][col] + 1)
-    return sum(risks)
-
+# Check to see if we can find a way to keep going or if we're at a dead end
+# for this part of the graph
 def is_dead_end(matrix, row, col, dx, dy):
     rows = len(matrix)
     cols = len(matrix[0])
@@ -75,32 +77,40 @@ def is_dead_end(matrix, row, col, dx, dy):
         # check up/down and found an out
         return not_dead_end
     return True
-
+    
 def get_size(matrix, matrix_traveled, row, col):
     rows = len(matrix)
     cols = len(matrix[0])
-    size = 0
     
-    if row - 1 >= 0 and matrix[row - 1][col] != 9 and added[row-1][col] == 0:
-        size += dfs(matrix, added, row, col, -1, 0)
-    if row + 1 < rows and matrix[row + 1][col] != 9 and added[row+1][col] == 0:
-        size += dfs(matrix, added, row, col, 1, 0)
-    if col - 1 >= 0 and matrix[row][col - 1] != 9 and added[row][col-1] == 0:
-        size += dfs(matrix, added, row, col-1, size)
-    if col + 1 < cols and matrix[row][col+1] != 9 and added[row][col+1] == 0:
-        size += dfs(matrix, added. row, col + 1, size)
-    print(size)
+    # Start from a given nadir and keep going until we find only dead ends;
+    # Mark the map as we go
+    in_basin = []
+    traverse_adjacent_sides(matrix, matrix_traveled, in_basin, row, col, rows, cols)
     
-def dfs(matrix, added, row, col, drow, dcol):
+    return len(in_basin)
     
-   if matrix[row + drow][col + dcol] != 9:
-        if row + drow >= 0
-         and matrix[row + drow][col + dcol]
-        dfs(matrix, row, col, )
-    elif:
+def traverse_adjacent_sides(matrix, matrix_traveled, in_basin, row, col, rows, cols):
+    if matrix[row][col] == 9 or matrix_traveled[row][col] >= 0:
+        if matrix[row][col] == 9 and matrix_traveled[row][col] < 0:
+            # It has no value because a wall is reached
+            matrix_traveled[row][col] = 0
+        return in_basin
         
+    matrix_traveled[row][col] = 1
+    if row + 1 < rows and matrix_traveled[row + 1][col] < 0:
+        traverse_adjacent_sides(matrix, matrix_traveled, in_basin, row + 1, col, rows, cols)
+    if row - 1 >= 0 and matrix_traveled[row - 1][col] < 0:
+        traverse_adjacent_sides(matrix, matrix_traveled, in_basin, row - 1, col, rows, cols)
+    if col + 1 < cols and matrix_traveled[row][col + 1] < 0:
+        traverse_adjacent_sides(matrix, matrix_traveled, in_basin, row, col + 1, rows, cols)
+    if col - 1 >= 0 and matrix_traveled[row][col - 1] < 0:
+        traverse_adjacent_sides(matrix, matrix_traveled, in_basin, row, col - 1, rows, cols)
     
+    if not (row, col) in in_basin:
+        in_basin.append((row, col))
     
+    return in_basin
+ 
 
 def init_size_map(matrix):
     size = 0
@@ -110,6 +120,8 @@ def init_size_map(matrix):
     new_matrix = []
     for row in range(rows):
         new_matrix.append([0] * cols)
+        for col in range(cols):
+            new_matrix[row][col] = -1
     
     return new_matrix
 
@@ -118,7 +130,6 @@ def get_day_9_solutions():
     heat_map = generate_matrix(input)
     sum_risks, basin_sizes = find_risks(heat_map)
     print("sum is %s" % (sum_risks))
-#    multiply_top_3_basins = find_basins(basin_sizes)
     print("multiple is %s" % (basin_sizes))
 
 get_day_9_solutions()
